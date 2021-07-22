@@ -36,7 +36,8 @@ bool rose(uint8_t i)
 bool up(uint8_t i)
 bool held(uint8_t i)
 bool heldUntil(uint8_t i, int t)
-bool upUntil(uint8_t i, int t)```
+bool upUntil(uint8_t i, int t)
+```
 
 # Oneshot functions
 **heldUntil(0,1000)** returns true ONCE when button 1(0) has been down 1 sec.
