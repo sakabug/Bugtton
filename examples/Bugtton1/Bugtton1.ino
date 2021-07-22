@@ -21,15 +21,15 @@ void loop() {
     buttons.update();
     
     // Code for handling button actions
-    if (buttons.fell(0)) Serial.println("B1 fell");
+    if (buttons.fell(0)) Serial.println("B0 fell");
     
-    if (buttons.rose(0)) Serial.println("B1 rose");
+    if (buttons.rose(0)) Serial.println("B0 rose");
     
     if (buttons.held(0)) {
         int t1 = buttons.duration(0)/1000;
         if (count1 != t1){
             count1++;
-            Serial.print("B1 held for ");
+            Serial.print("B0 held for ");
             Serial.print(count1);
             Serial.println(" s");
         }
@@ -44,6 +44,6 @@ void loop() {
 
     // If button 2 is left unpressed for 5 sec - it tells user to press it - oneshot
     if (buttons.upUntil(1,5000))
-        Serial.println("Press button 2 for 1 second");
+        Serial.println("Press B1 for 1 second");
    
 }
