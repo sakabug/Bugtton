@@ -1,8 +1,8 @@
 Bugtton		KEYWORD1
-debounceTime		KEYWORD2
+debounceTime	KEYWORD2
 update		KEYWORD2
 setMode		KEYWORD2
-duration		KEYWORD2
+duration	KEYWORD2
 fell		KEYWORD2
 held		KEYWORD2
 rose		KEYWORD2
