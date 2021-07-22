@@ -12,16 +12,15 @@ Pressed buttons 0.010 - 0.085 ms per cycle with 1-18 buttons.
 
 Unpressed state is sleeking fast.
 
-## How to start?
+## In nutshell
 ```
-/#include <Bugtton.h>
+#include <Bugtton.h>
 
 const uint8_t buttonCount = 5;
 const uint8_t buttonPins[buttonCount] = {2,3,4,5,6};
 Bugtton buttons(buttonCount, buttonPins, INPUT_PULLUP, 25);
 -
 void loop() {
-    
   buttons.update();
   -
 ```
@@ -37,4 +36,8 @@ bool rose(uint8_t i)
 bool up(uint8_t i)
 bool held(uint8_t i)
 bool heldUntil(uint8_t i, int t)
-bool upUntil(uint8_t i, int t)```   
+bool upUntil(uint8_t i, int t)```
+
+# Oneshot functions
+**heldUntil(0,1000)** returns true ONCE when button 1(0) has been down 1 sec.
+**upUntil(1,10000)** returns true ONCE when button 2(1) has been unpressed for 10 sec.
