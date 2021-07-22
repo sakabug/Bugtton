@@ -12,10 +12,22 @@ Pressed buttons 0.010 - 0.085 ms per cycle with 1-18 buttons.
 
 Unpressed state is sleeking fast.
 
-## Usable functions
+## How to start?
+```#include <Bugtton.h>
 
-```
-Bugtton(const uint8_t buttonCount, const uint8_t *pinArray, uint8_t mode, uint8_t debounceTime)
+const uint8_t buttonCount = 5;
+const uint8_t buttonPins[buttonCount] = {2,3,4,5,6};
+Bugtton buttons(buttonCount, buttonPins, INPUT_PULLUP, 25);
+
+...
+
+void loop() {
+    
+  buttons.update();
+  ...```
+
+## Usable functions
+```Bugtton(const uint8_t buttonCount, const uint8_t *pinArray, uint8_t mode, uint8_t debounceTime)
 void setMode(uint8_t i, uint8_t mode)
 void debounceTime(uint16_t a);       
 void update()
@@ -25,5 +37,4 @@ bool rose(uint8_t i)
 bool up(uint8_t i)
 bool held(uint8_t i)
 bool heldUntil(uint8_t i, int t)
-bool upUntil(uint8_t i, int t)
-```   
+bool upUntil(uint8_t i, int t)```   
