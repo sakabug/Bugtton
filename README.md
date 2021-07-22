@@ -29,7 +29,8 @@ void loop() {
 ```
 
 ## Usable functions
-```Bugtton(const uint8_t buttonCount, const uint8_t *pinArray, uint8_t mode, uint8_t debounceTime)
+```
+Bugtton(const uint8_t buttonCount, const uint8_t *pinArray, uint8_t mode, uint8_t debounceTime)
 void setMode(uint8_t i, uint8_t mode)
 void debounceTime(uint16_t a);       
 void update()
@@ -43,5 +44,5 @@ bool upUntil(uint8_t i, int t)
 ```
 
 ## Oneshot functions
-**heldUntil(0,1000)** returns true ONCE when button 0 has been down 1 sec.
-**upUntil(1,10000)** returns true ONCE when button 1 has been unpressed for 10 sec.
+heldUntil(0,1000) returns true ONCE when button 0 has been down 1 sec.
+upUntil(1,10000) returns true ONCE when button 1 has been unpressed for 10 sec.
