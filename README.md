@@ -1,17 +1,16 @@
-# Bugtton
+## Bugtton
 Fast button debounce library for ATmega328P, uses registers.
 
-## Why another button library?
+### Why another button library?
 I've tried plenty of different button libraries with ATmega328P, but most of them lacked something, or were too bulky for my own use.
 
-## Fast
+### Fast
 It uses registers, and it's fast. 1000 cycles with various button amounts gave following:
 
-Unpressed buttons 0.003 ms per cycle regardless button count.
+* Unpressed buttons 0.003 ms per cycle regardless button count.
+* Pressed buttons 0.010 - 0.085 ms per cycle with 1-18 buttons.
 
-Pressed buttons 0.010 - 0.085 ms per cycle with 1-18 buttons.
-
-## Usage In nutshell
+### Usage In nutshell
 ```
 #include <Bugtton.h>
 
@@ -27,22 +26,17 @@ void loop() {
   -
 ```
 
-## Usable functions
-```
-Bugtton(const uint8_t buttonCount, const uint8_t *pinArray, uint8_t mode, uint8_t debounceTime)
-void setMode(uint8_t i, uint8_t mode)
-void debounceTime(uint16_t a);       
-void update()
-unsigned long duration(uint8_t)
-bool fell(uint8_t i)
-bool rose(uint8_t i)
-bool up(uint8_t i)
-bool held(uint8_t i)
-bool heldUntil(uint8_t i, int t)
-bool upUntil(uint8_t i, int t)
-```
-
-## Oneshot functions
-heldUntil(0,1000) returns true ONCE when button 0 has been down 1 sec.
-
-upUntil(1,10000) returns true ONCE when button 1 has been unpressed for 10 sec.
+### Usable functions
+Function|Notes
+:--------|:--------
+**`Bugtton(buttonCount, *pinArray, mode, debounceTime)`**|*Creates button handler*<br>
+**`void setMode(pin, mode)`**<br>|*If you need to set individual pins as INPUT and INPUT_PULLUP*
+**`void debounceTime(time)`**<br>|*If you need to test different debounce times*
+**`void update()`**<br>|*One update to rule them all*
+**`unsigned long duration(button_i)`**<br>|*Returns pressed OR unpressed duration of button_i*
+**`bool fell(button_i)`**<br>|*Did button_i change state from unpressed to pressed?*
+**`bool rose(button_i)`**<br>|*Did button_i change state from pressed to unpressed?*
+**`bool up(button_i)`**<br>|*Is button_i unpressed?*
+**`bool held(button_i)`**<br>|*Is button_i pressed?*
+**`bool heldUntil(button_i, time)`**<br>|*Returns true ONCE when button_i have been pressed x time.*
+**`bool upUntil(button_i, time)`**<br>|*Returns true ONCE when button_i have been unpressed x time.*
