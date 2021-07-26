@@ -45,10 +45,13 @@ class Bugtton {
         uint8_t *_debounceTime;
         bool _allStable;
         bool _flag1;
+        bool _allUp;
+        bool _allUpUsed;
         
         uint8_t *_pins;
         byte *_bits;
         unsigned long *_stateStarted;
+        unsigned long _allUpStarted;
         
         void Bugtton::makeMasks();
         //void Bugtton::printBIN(byte b);
@@ -65,6 +68,8 @@ class Bugtton {
         bool Bugtton::heldUntilUsed(uint8_t i);
         void Bugtton::stateStarted(uint8_t i, unsigned long a);
         unsigned long Bugtton::stateStarted(uint8_t i);
+        void Bugtton::tickBit(uint8_t i, bool a);
+        bool Bugtton::tickBit(uint8_t i);
 
     public:
 
@@ -80,6 +85,8 @@ class Bugtton {
         bool Bugtton::held(uint8_t i);
         bool Bugtton::heldUntil(uint8_t i, int t);
         bool Bugtton::upUntil(uint8_t i, int t);
+        bool Bugtton::intervalTick(uint8_t i, unsigned long t);
+        
 };
 
 

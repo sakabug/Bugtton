@@ -78,18 +78,18 @@ void Bugtton::debounceTime(uint16_t a){ _debounceTime = a; }
 
 // Updates all buttons at once, needs to run only once in loop, this is what I wanted
 void Bugtton::update(){
-  
-
+    _allUp = false;
     if (_allStable){
-        if (    (_maskD == (PIND&_maskD)) &&
-                (_maskB == (PINB&_maskB)) &&
-                (_maskC == (PINC&_maskC)) ){
+        if ((_maskD == (PIND&_maskD)) &&
+            (_maskB == (PINB&_maskB)) &&
+            (_maskC == (PINC&_maskC)) ){
             // if no buttons down, and buttons states are stable
-            if (_flag1) return;
+            if (_flag1) {
+                return;
+            }
             _flag1 = true;
         }
     }
-  
     //Update bits
     for (uint8_t i=0; i<_count; i++){
         
@@ -97,7 +97,6 @@ void Bugtton::update(){
         changedBit(i, 0);
         
         // Update currentBit from registers
-        // 111us -> 85us over my bad ternary
         if (_pins[i] < 8) currentBit(i, PIND&(1<<_pins[i]) );
         else if (_pins[i] < 14) currentBit(PINB&(1<<(_pins[i]-8) ));
         else if (_pins[i] < 20) currentBit(PINC&(1<<(_pins[i]-14) ));
@@ -126,20 +125,22 @@ void Bugtton::update(){
                 heldUntilUsed(i,0);
             }
         }
-    } 
+    }
 }
 
 // Manipulating single button byte
-void Bugtton::currentBit(uint8_t i, bool a)  { bitWrite(_bits[i], 7, a); }
-bool Bugtton::currentBit(uint8_t i)          { return bitRead(_bits[i], 7); }
-void Bugtton::stableBit(uint8_t i, bool a)   { bitWrite(_bits[i], 6, a); }
-bool Bugtton::stableBit(uint8_t i)           { return bitRead(_bits[i], 6); }      
-void Bugtton::oldBit(uint8_t i, bool a)      { bitWrite(_bits[i], 5, a); }
-bool Bugtton::oldBit(uint8_t i)              { return bitRead(_bits[i], 5); }
-void Bugtton::changedBit(uint8_t i, bool a)  { bitWrite(_bits[i], 4, a); }
-bool Bugtton::changedBit(uint8_t i)          { return bitRead(_bits[i], 4); }
+void Bugtton::currentBit(uint8_t i, bool a) { bitWrite(_bits[i], 7, a); }
+bool Bugtton::currentBit(uint8_t i)         { return bitRead(_bits[i], 7); }
+void Bugtton::stableBit(uint8_t i, bool a)  { bitWrite(_bits[i], 6, a); }
+bool Bugtton::stableBit(uint8_t i)          { return bitRead(_bits[i], 6); }      
+void Bugtton::oldBit(uint8_t i, bool a)     { bitWrite(_bits[i], 5, a); }
+bool Bugtton::oldBit(uint8_t i)             { return bitRead(_bits[i], 5); }
+void Bugtton::changedBit(uint8_t i, bool a) { bitWrite(_bits[i], 4, a); }
+bool Bugtton::changedBit(uint8_t i)         { return bitRead(_bits[i], 4); }
 void Bugtton::heldUntilUsed(uint8_t i, bool a) { bitWrite(_bits[i], 3, a); }
-bool Bugtton::heldUntilUsed(uint8_t i)       { return bitRead(_bits[i], 3); }
+bool Bugtton::heldUntilUsed(uint8_t i)      { return bitRead(_bits[i], 3); }
+void Bugtton::tickBit(uint8_t i, bool a)    { bitWrite(_bits[i], 2, a); }
+bool Bugtton::tickBit(uint8_t i)            { return bitRead(_bits[i], 2); }
 
 // Timestamps for debounce, and duration function
 void Bugtton::stateStarted(uint8_t i, unsigned long a){ _stateStarted[i] = a; }
@@ -222,3 +223,22 @@ bool Bugtton::upUntil(uint8_t i, int t){
     }
 	return false;
 }
+
+// Oneshot function that returns true once on every interval set
+bool Bugtton::intervalTick(uint8_t i, unsigned long t){
+    if (    (_bits[i]&B11110000) == B01000000){
+        if ( (millis() - _stateStarted[i])%t == 0 && !tickBit(i) ){
+            tickBit(i, 1);
+            return true;
+        }
+        else if ( (millis() - _stateStarted[i])%t != 0 && tickBit(i) ){
+            tickBit(i, 0);
+        }
+    }
+    return false;
+}
+
+
+
+
+
