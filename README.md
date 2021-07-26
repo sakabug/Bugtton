@@ -27,8 +27,9 @@ Function|Notes
 **`bool rose(button_i)`**<br>|*Did button_i change state from pressed to unpressed?*
 **`bool up(button_i)`**<br>|*Is button_i unpressed?*
 **`bool held(button_i)`**<br>|*Is button_i pressed?*
-**`bool heldUntil(button_i, time)`**<br>|*Returns true ONCE when button_i have been pressed x time.*
-**`bool upUntil(button_i, time)`**<br>|*Returns true ONCE when button_i have been unpressed x time.*
+**`bool heldUntil(button_i, time)`**<br>|*Returns true ONCE when button_i have been pressed x time*
+**`bool upUntil(button_i, time)`**<br>|*Returns true ONCE when button_i have been unpressed x time*
+**`bool intervalTick(button_i, time)`**|*Returns true ONCE every set interval while button_i pressed*
 
 I use long press functionality alot in my codes, so I wanted to add suitable functions for it. Feel free to suggest new ideas.
 
