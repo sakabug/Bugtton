@@ -9,3 +9,4 @@ rose		KEYWORD2
 up		KEYWORD2
 heldUntil	KEYWORD2
 upUntil		KEYWORD2
+intervalTick	KEYWORD2

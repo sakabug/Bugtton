@@ -54,9 +54,8 @@ void loop() {
     }
 
     if (buttons.intervalTick(2,1000)){
-        count1++;
-        Serial.print("Button 0 pressed for ");
-        Serial.print(count1);
+        Serial.print("B2 pressed for ");
+        Serial.print(buttons.duration(2)/1000);
         Serial.println(" secs");
     }
    
