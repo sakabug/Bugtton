@@ -51,10 +51,11 @@ class Bugtton {
         uint8_t *_pins;
         byte *_bits;
         unsigned long *_stateStarted;
+        unsigned long *_ticksStarted;
         unsigned long _allUpStarted;
         
         void Bugtton::makeMasks();
-        //void Bugtton::printBIN(byte b);
+        void Bugtton::printBIN(byte b);
         
         void Bugtton::currentBit(uint8_t i, bool a);
         bool Bugtton::currentBit(uint8_t i);

@@ -45,12 +45,14 @@ Bugtton::Bugtton(const uint8_t a, const uint8_t *b, uint8_t mode, uint8_t dt){
     _pins = new uint8_t[_count];
     _bits = new byte[_count];
     _stateStarted = new unsigned long[_count];
+    _ticksStarted = new unsigned long[_count];
     // Init button data
     for(uint8_t i=0; i<_count; i++){
         setMode(b[i], mode);
         _pins[i] = b[i];
         _bits[i] = B11100000;
         _stateStarted[i] = 0;
+        _ticksStarted[i] = 0;
     }
     
     // Make bitmasks
@@ -67,11 +69,11 @@ void Bugtton::makeMasks(){
 }
 
 // For debugging purposes
-/*void Bugtton::printBIN(byte b){
+void Bugtton::printBIN(byte b){
   for(int i = 7; i >= 0; i--)
     Serial.print(bitRead(b,i));
   Serial.println();  
-}*/
+}
 
 // If you need set debounce time with code, THIS IS set at constructor
 void Bugtton::debounceTime(uint16_t a){ _debounceTime = a; }
@@ -122,6 +124,7 @@ void Bugtton::update(){
                 oldBit(i, currentBit(i));
                 changedBit(i, 1);
                 stateStarted(i, millis());
+                _ticksStarted[i] = millis();
                 heldUntilUsed(i,0);
             }
         }
@@ -149,35 +152,35 @@ unsigned long Bugtton::duration(uint8_t i) { return millis() - _stateStarted[i];
 
 // Set pin mode here
 void Bugtton::setMode(uint8_t i, uint8_t mode){
-	if (mode == OUTPUT){
-		// Set DDR bit -> OUTPUT
+    if (mode == OUTPUT){
+        // Set DDR bit -> OUTPUT
         if (i < 8) DDRD|=(1<<(i));
         else if (i < 14) DDRB|=(1<<(i-8));
         else if (i < 20) DDRC|=(1<<(i-14));
         // Defaults to LOW if coming from INPUT mode (HIGH if from INPUT_PULLUP)
-	}
-	else{
-		// Clear DDR bit -> INPUT
+    }
+    else{
+        // Clear DDR bit -> INPUT
         if (i < 8) DDRD&=~(1<<(i));
         else if (i < 14) DDRB&=~(1<<(i-8));
         else if (i < 20) DDRC&=~(1<<(i-14));
         
         if (mode == INPUT_PULLUP){
-			// Set PORT bit
+            // Set PORT bit
             if (i < 8) PORTD|=(1<<(i));
             else if (i < 14) PORTB|=(1<<(i-8));
             else if (i < 20) PORTC|=(1<<(i-14));
-		}
+        }
         else{
             // Clear PORT bit
             if (i < 8) PORTD&=~(1<<(i));
             else if (i < 14) PORTB&=~(1<<(i-8));
             else if (i < 20) PORTC&=~(1<<(i-14));
         }
-	}
+    }
 }
 
-// Get button state accordingly it's set bits
+// Button state has changed to unpressed to pressed
 bool Bugtton::fell(uint8_t i){
 	if ( (_bits[i]&B11110000) == B01010000 ) {
         return true;
@@ -185,6 +188,7 @@ bool Bugtton::fell(uint8_t i){
 	return false;
 }
 
+// Button state has changed to pressed to unpressed
 bool Bugtton::rose(uint8_t i){
 	if ( (_bits[i]&B11110000) == B11110000 ) {
         return true;
@@ -192,13 +196,15 @@ bool Bugtton::rose(uint8_t i){
 	return false;
 }
 
+// Button is unpressed
 bool Bugtton::up(uint8_t i){
-	if ( _bits[i] == B11100000 ) {
+    if ( (_bits[i]&B11110000) == B11100000 ) {
         return true;
     }
-	return false;
+    return false;
 }
 
+// Button is being held down (pressed)
 bool Bugtton::held(uint8_t i){
 	if ( (_bits[i]&B11110000) == B01000000 ) {
         return true;
@@ -206,32 +212,34 @@ bool Bugtton::held(uint8_t i){
 	return false;
 }
 
-// Oneshot function that return true when button i has been pressed t time. Sets bit once used
+// Returns true once when <time> ms reached while button pressed state
 bool Bugtton::heldUntil(uint8_t i, int t){
-	if ( (_bits[i] == B01000000) && duration(i) >= t) {
+    //printBIN(_bits[i]);
+	if ( (_bits[i]&B11111000) == B01000000 && duration(i) >= t) {
         bitWrite(_bits[i], 3, 1);
         return true;
     }
 	return false;
 }
 
-// Oneshot function that return true when button i has been up t time. Sets bit once used
+// Returns true once when <time> ms reached while button unpressed state
 bool Bugtton::upUntil(uint8_t i, int t){
-	if ( (_bits[i] == B11100000 ) && duration(i) >= t) {
+	if ( (_bits[i]&B11111000) == B11100000 && duration(i) >= t) {
         bitWrite(_bits[i], 3, 1);
         return true;
     }
 	return false;
 }
 
-// Oneshot function that returns true once on every interval set
+// Returns true once every <time> ms
 bool Bugtton::intervalTick(uint8_t i, unsigned long t){
-    if (    (_bits[i]&B11110000) == B01000000){
-        if ( (millis() - _stateStarted[i])%t == 0 && !tickBit(i) ){
+    if ( (_bits[i]&B11110000) == B01000000){
+        if ( (millis() - _ticksStarted[i]) >= t && !tickBit(i) ){
             tickBit(i, 1);
+            _ticksStarted[i] += t;
             return true;
         }
-        else if ( (millis() - _stateStarted[i])%t != 0 && tickBit(i) ){
+        else if ( (millis() - _ticksStarted[i]) < t && tickBit(i) ){
             tickBit(i, 0);
         }
     }
