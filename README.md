@@ -5,7 +5,9 @@ Fast button debounce library for ATmega328P. Uses registers instead of digitalRe
 Compact to use.
 ```
 #include <Bugtton.h>
-Bugtton buttons(5, {2,3,4,5,6}, INPUT_PULLUP, 25);
+const uint8_t buttonCount = 5;
+const uint8_t buttonPins[buttonCount] = {2,3,4,5,6};
+Bugtton buttons(buttonCount, buttonPins, INPUT_PULLUP, 25);
 --
 void loop() {
   buttons.update();
