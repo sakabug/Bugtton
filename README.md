@@ -37,13 +37,3 @@ I use long press functionality alot in my codes, so I wanted to add suitable fun
 
 ### Why this library was made
 Idea was to make fast button library when nothing is pressed so it would affect to the cycle time as little as possible.
-
-**Times per one cycle**
-Button amount|unpressed|pressed
--|-|-
-1|0.003 ms|0.010 ms
-2|0.003 ms|0.014 ms
-3|0.003 ms|0.018 ms
-5|0.003 ms|0.027 ms
-10|0.003 ms|0.049 ms
-18|0.003 ms|0.085 ms
