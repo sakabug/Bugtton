@@ -37,3 +37,5 @@ I use long press functionality alot in my codes, so I wanted to add suitable fun
 
 ### Why this library was made
 Idea was to make fast button library when nothing is pressed so it would affect to the cycle time as little as possible.
+
+Doesn't matter if you have 1 or 18 buttons, update() takes between 3100-3250 microseconds per 1000 update on unpressed buttons -> 3us per loop.
