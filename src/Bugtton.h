@@ -78,11 +78,11 @@ class Bugtton {
         void debounceTime(uint16_t a);        
         void update();
         
-        void Mode(uint8_t i, uint8_t mode);
+        void setMode(uint8_t i, uint8_t mode);
         unsigned long duration(uint8_t);
         bool fell(uint8_t i);
-		bool rose(uint8_t i);
-		bool up(uint8_t i);
+	bool rose(uint8_t i);
+	bool up(uint8_t i);
         bool held(uint8_t i);
         bool heldUntil(uint8_t i, int t);
         bool upUntil(uint8_t i, int t);
