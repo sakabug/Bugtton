@@ -54,39 +54,39 @@ class Bugtton {
         unsigned long *_ticksStarted;
         unsigned long _allUpStarted;
         
-        void Bugtton::makeMasks();
-        void Bugtton::printBIN(byte b);
+        void makeMasks();
+        void printBIN(byte b);
         
-        void Bugtton::currentBit(uint8_t i, bool a);
-        bool Bugtton::currentBit(uint8_t i);
-        void Bugtton::stableBit(uint8_t i, bool a);
-        bool Bugtton::stableBit(uint8_t i);
-        void Bugtton::oldBit(uint8_t i, bool a);
-        bool Bugtton::oldBit(uint8_t i);
-        void Bugtton::changedBit(uint8_t i, bool a);
-        bool Bugtton::changedBit(uint8_t i);
-        void Bugtton::heldUntilUsed(uint8_t i, bool a);
-        bool Bugtton::heldUntilUsed(uint8_t i);
-        void Bugtton::stateStarted(uint8_t i, unsigned long a);
-        unsigned long Bugtton::stateStarted(uint8_t i);
-        void Bugtton::tickBit(uint8_t i, bool a);
-        bool Bugtton::tickBit(uint8_t i);
+        void currentBit(uint8_t i, bool a);
+        bool currentBit(uint8_t i);
+        void stableBit(uint8_t i, bool a);
+        bool stableBit(uint8_t i);
+        void oldBit(uint8_t i, bool a);
+        bool oldBit(uint8_t i);
+        void changedBit(uint8_t i, bool a);
+        bool changedBit(uint8_t i);
+        void heldUntilUsed(uint8_t i, bool a);
+        bool heldUntilUsed(uint8_t i);
+        void stateStarted(uint8_t i, unsigned long a);
+        unsigned long stateStarted(uint8_t i);
+        void tickBit(uint8_t i, bool a);
+        bool tickBit(uint8_t i);
 
     public:
 
-        Bugtton::Bugtton(const uint8_t a, const uint8_t *b, uint8_t mode, uint8_t dt);
-        void Bugtton::debounceTime(uint16_t a);        
-        void Bugtton::update();
+        Bugtton(const uint8_t a, const uint8_t *b, uint8_t mode, uint8_t dt);
+        void debounceTime(uint16_t a);        
+        void update();
         
-        void Bugtton::setMode(uint8_t i, uint8_t mode);
-        unsigned long Bugtton::duration(uint8_t);
-        bool Bugtton::fell(uint8_t i);
-		bool Bugtton::rose(uint8_t i);
-		bool Bugtton::up(uint8_t i);
-        bool Bugtton::held(uint8_t i);
-        bool Bugtton::heldUntil(uint8_t i, int t);
-        bool Bugtton::upUntil(uint8_t i, int t);
-        bool Bugtton::intervalTick(uint8_t i, unsigned long t);
+        void Mode(uint8_t i, uint8_t mode);
+        unsigned long duration(uint8_t);
+        bool fell(uint8_t i);
+		bool rose(uint8_t i);
+		bool up(uint8_t i);
+        bool held(uint8_t i);
+        bool heldUntil(uint8_t i, int t);
+        bool upUntil(uint8_t i, int t);
+        bool intervalTick(uint8_t i, unsigned long t);
         
 };
 
