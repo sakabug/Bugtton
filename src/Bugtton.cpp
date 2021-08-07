@@ -56,7 +56,7 @@ Bugtton::Bugtton(const uint8_t a, const uint8_t *b, uint8_t mode, uint8_t dt){
     }
     
     // Make bitmasks
-    Bugtton::makeMasks();
+    makeMasks();
 }
 
 // Bitmask for registers, formed from pin array
