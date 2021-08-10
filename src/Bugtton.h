@@ -2,7 +2,7 @@
 // Bugtton - button debounce library for ATmega168/328P
 
 // Fast button debounce library for ATmega328P. Uses registers instead of digitalRead.
-// Cycle speed 0.003ms unpressed, 0.010-0.085ms pressed (1-18 buttons).
+// It's fast and I want it faster.
 
 // Created by Sami Kaukasalo / sakabug, July 20, 2021.
 
