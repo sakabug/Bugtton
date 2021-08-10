@@ -38,24 +38,24 @@ class Bugtton {
   
     private:
 
-        byte _maskD;
-        byte _maskB;
-        byte _maskC;
+        uint8_t _maskD;
+        uint8_t _maskB;
+        uint8_t _maskC;
         uint8_t _count;
-        uint8_t *_debounceTime;
+        uint8_t _debounceTime;
         bool _allStable;
         bool _flag1;
         bool _allUp;
         bool _allUpUsed;
         
         uint8_t *_pins;
-        byte *_bits;
-        unsigned long *_stateStarted;
-        unsigned long *_ticksStarted;
-        unsigned long _allUpStarted;
+        uint8_t *_bits;
+        uint32_t *_stateStarted;
+        uint32_t *_ticksStarted;
+        uint32_t _allUpStarted;
         
         void makeMasks();
-        void printBIN(byte b);
+        void printBIN(uint8_t b);
         
         void currentBit(uint8_t i, bool a);
         bool currentBit(uint8_t i);
@@ -67,10 +67,11 @@ class Bugtton {
         bool changedBit(uint8_t i);
         void heldUntilUsed(uint8_t i, bool a);
         bool heldUntilUsed(uint8_t i);
-        void stateStarted(uint8_t i, unsigned long a);
-        unsigned long stateStarted(uint8_t i);
+        void stateStarted(uint8_t i, uint32_t a);
+        uint32_t stateStarted(uint8_t i);
         void tickBit(uint8_t i, bool a);
         bool tickBit(uint8_t i);
+        
 
     public:
 
@@ -79,14 +80,14 @@ class Bugtton {
         void update();
         
         void setMode(uint8_t i, uint8_t mode);
-        unsigned long duration(uint8_t);
+        uint32_t duration(uint8_t);
         bool fell(uint8_t i);
-	bool rose(uint8_t i);
-	bool up(uint8_t i);
+        bool rose(uint8_t i);
+        bool up(uint8_t i);
         bool held(uint8_t i);
-        bool heldUntil(uint8_t i, int t);
-        bool upUntil(uint8_t i, int t);
-        bool intervalTick(uint8_t i, unsigned long t);
+        bool heldUntil(uint8_t i, uint16_t t);
+        bool upUntil(uint8_t i, uint16_t t);
+        bool intervalTick(uint8_t i, uint32_t t);
         
 };
 

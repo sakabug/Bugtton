@@ -43,9 +43,9 @@ Bugtton::Bugtton(const uint8_t a, const uint8_t *b, uint8_t mode, uint8_t dt){
     
     // Create buttons (was first separate classes, but this is the way I went)
     _pins = new uint8_t[_count];
-    _bits = new byte[_count];
-    _stateStarted = new unsigned long[_count];
-    _ticksStarted = new unsigned long[_count];
+    _bits = new uint8_t[_count];
+    _stateStarted = new uint32_t[_count];
+    _ticksStarted = new uint32_t[_count];
     // Init button data
     for(uint8_t i=0; i<_count; i++){
         setMode(b[i], mode);
@@ -69,7 +69,7 @@ void Bugtton::makeMasks(){
 }
 
 // For debugging purposes
-void Bugtton::printBIN(byte b){
+void Bugtton::printBIN(uint8_t b){
   for(int i = 7; i >= 0; i--)
     Serial.print(bitRead(b,i));
   Serial.println();  
@@ -146,9 +146,9 @@ void Bugtton::tickBit(uint8_t i, bool a)    { bitWrite(_bits[i], 2, a); }
 bool Bugtton::tickBit(uint8_t i)            { return bitRead(_bits[i], 2); }
 
 // Timestamps for debounce, and duration function
-void Bugtton::stateStarted(uint8_t i, unsigned long a){ _stateStarted[i] = a; }
-unsigned long Bugtton::stateStarted(uint8_t i) { return _stateStarted[i]; }
-unsigned long Bugtton::duration(uint8_t i) { return millis() - _stateStarted[i]; }
+void Bugtton::stateStarted(uint8_t i, uint32_t a){ _stateStarted[i] = a; }
+uint32_t Bugtton::stateStarted(uint8_t i) { return _stateStarted[i]; }
+uint32_t Bugtton::duration(uint8_t i) { return millis() - _stateStarted[i]; }
 
 // Set pin mode here
 void Bugtton::setMode(uint8_t i, uint8_t mode){
@@ -213,7 +213,7 @@ bool Bugtton::held(uint8_t i){
 }
 
 // Returns true once when <time> ms reached while button pressed state
-bool Bugtton::heldUntil(uint8_t i, int t){
+bool Bugtton::heldUntil(uint8_t i, uint16_t t){
     //printBIN(_bits[i]);
 	if ( (_bits[i]&B11111000) == B01000000 && duration(i) >= t) {
         bitWrite(_bits[i], 3, 1);
@@ -223,7 +223,7 @@ bool Bugtton::heldUntil(uint8_t i, int t){
 }
 
 // Returns true once when <time> ms reached while button unpressed state
-bool Bugtton::upUntil(uint8_t i, int t){
+bool Bugtton::upUntil(uint8_t i, uint16_t t){
 	if ( (_bits[i]&B11111000) == B11100000 && duration(i) >= t) {
         bitWrite(_bits[i], 3, 1);
         return true;
@@ -232,7 +232,7 @@ bool Bugtton::upUntil(uint8_t i, int t){
 }
 
 // Returns true once every <time> ms
-bool Bugtton::intervalTick(uint8_t i, unsigned long t){
+bool Bugtton::intervalTick(uint8_t i, uint32_t t){
     if ( (_bits[i]&B11110000) == B01000000){
         if ( (millis() - _ticksStarted[i]) >= t && !tickBit(i) ){
             tickBit(i, 1);
