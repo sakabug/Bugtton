@@ -100,8 +100,8 @@ void Bugtton::update(){
         
         // Update currentBit from registers
         if (_pins[i] < 8) currentBit(i, PIND&(1<<_pins[i]) );
-        else if (_pins[i] < 14) currentBit(PINB&(1<<(_pins[i]-8) ));
-        else if (_pins[i] < 20) currentBit(PINC&(1<<(_pins[i]-14) ));
+        else if (_pins[i] < 14) currentBit(i, PINB&(1<<(_pins[i]-8) ));
+        else if (_pins[i] < 20) currentBit(i, PINC&(1<<(_pins[i]-14) ));
         
         //No change in button state
         if ( currentBit(i) == oldBit(i)){
