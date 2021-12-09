@@ -5,6 +5,7 @@
 // It's fast and I want it faster.
 
 // Created by Sami Kaukasalo / sakabug, July 20, 2021.
+// Updated 9.12.2021
 
 // MIT License
 
