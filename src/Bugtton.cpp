@@ -5,7 +5,6 @@
 // It's fast and I want it faster.
 
 // Created by Sami Kaukasalo / sakabug, July 20, 2021.
-// Updated 9.12.2021
 
 // MIT License
 
@@ -32,26 +31,38 @@
 #include "Bugtton.h"
 
 // Bugtton buttons(buttonCount, buttonPins(array), INPUT/INPUT_PULLUP, debounce time)
-Bugtton::Bugtton(const uint8_t a, const uint8_t *b, uint8_t mode, uint8_t dt){
+Bugtton::Bugtton(const uint8_t a, const uint8_t *b, uint8_t dt){
     // Init values
     _maskD = B00000000;
     _maskB = B00000000;
     _maskC = B00000000;
+    _idleD = B00000000;
+    _idleB = B00000000;
+    _idleC = B00000000;
     _count = a;
     _debounceTime = dt;
     _allStable = false;
     _flag1 = false;
     
-    // Create buttons (was first separate classes, but this is the way I went)
+    // Create buttons
     _pins = new uint8_t[_count];
     _bits = new uint8_t[_count];
     _stateStarted = new uint32_t[_count];
     _ticksStarted = new uint32_t[_count];
     // Init button data
     for(uint8_t i=0; i<_count; i++){
-        setMode(b[i], mode);
-        _pins[i] = b[i];
-        _bits[i] = B11100000;
+        // If pin # negative, it's inverted pin
+        int8_t pin = b[i];
+        if(pin<0){
+            pin *= -1;
+            _bits[i] = B11100001;
+            setMode(pin, INPUT);
+        }
+        else{
+            _bits[i] = B11100000;
+            setMode(pin, INPUT_PULLUP);
+        }
+        _pins[i] = pin;
         _stateStarted[i] = 0;
         _ticksStarted[i] = 0;
     }
@@ -60,12 +71,30 @@ Bugtton::Bugtton(const uint8_t a, const uint8_t *b, uint8_t mode, uint8_t dt){
     makeMasks();
 }
 
-// Bitmask for registers, formed from pin array
+// Bitmask for registers, formed from pin array, mark active registers
 void Bugtton::makeMasks(){
     for (uint8_t i=0; i<_count; i++){
-        if (_pins[i] < 8) bitWrite(_maskD, _pins[i], 1);
-        else if (_pins[i] >= 8 && _pins[i] < 14) bitWrite(_maskB, (_pins[i]-8), 1);
-        else if (_pins[i] >= 14 && _pins[i] < 20) bitWrite(_maskC, (_pins[i]-14), 1);
+        if (_pins[i] < 8) {
+            // Write to maskD   (active buttons)
+            bitWrite(_maskD, _pins[i], 1);
+            // Write to idleD  (button idle state)
+            if (flippedBit(i)) bitWrite(_idleD, _pins[i], 0);
+            else bitWrite(_idleD, _pins[i], 1);
+        }
+        else if (_pins[i] >= 8 && _pins[i] < 14) {
+            // Write to maskB (active buttons)
+            bitWrite(_maskB, (_pins[i]-8), 1);
+            // Write to idleB  (button idle state)
+            if (flippedBit(i)) bitWrite(_idleB, (_pins[i]-8), 0);
+            else bitWrite(_idleB, (_pins[i]-8), 1);
+        }
+        else if (_pins[i] >= 14 && _pins[i] < 20) {
+            // Write to maskC (active buttons)
+            bitWrite(_maskC, (_pins[i]-14), 1);
+            // Write to idleC  (button idle state)
+            if (flippedBit(i)) bitWrite(_idleC, (_pins[i]-14), 0);
+            else bitWrite(_idleC, (_pins[i]-14), 1);
+        }
     }
 }
 
@@ -79,14 +108,14 @@ void Bugtton::printBIN(uint8_t b){
 // If you need set debounce time with code, THIS IS set at constructor
 void Bugtton::debounceTime(uint16_t a){ _debounceTime = a; }
 
-// Updates all buttons at once, needs to run only once in loop, this is what I wanted
+// Updates all buttons at once, needs to run only once in loop
 void Bugtton::update(){
-    _allUp = false;
     if (_allStable){
-        if ((_maskD == (PIND&_maskD)) &&
-            (_maskB == (PINB&_maskB)) &&
-            (_maskC == (PINC&_maskC)) ){
-            // if no buttons down, and buttons states are stable
+        // Buttons unpressed?
+        if ((_idleD == (PIND&_maskD)) &&
+            (_idleB == (PINB&_maskB)) &&
+            (_idleC == (PINC&_maskC)) ){
+            // Let function run once, then keep skipping until changes in registers
             if (_flag1) {
                 return;
             }
@@ -95,21 +124,25 @@ void Bugtton::update(){
     }
     //Update bits
     for (uint8_t i=0; i<_count; i++){
-        
         // Reset changedBit
         changedBit(i, 0);
-        
-        // Update currentBit from registers
-        if (_pins[i] < 8) currentBit(i, PIND&(1<<_pins[i]) );
-        else if (_pins[i] < 14) currentBit(i, PINB&(1<<(_pins[i]-8) ));
-        else if (_pins[i] < 20) currentBit(i, PINC&(1<<(_pins[i]-14) ));
-        
+        // Active low (pull up)
+        if ((_bits[i]&B00000001) == B00000000){
+            if (_pins[i] < 8)       currentBit(i, PIND&(1<<_pins[i]) );
+            else if (_pins[i] < 14) currentBit(i, PINB&(1<<(_pins[i]-8) ));
+            else if (_pins[i] < 20) currentBit(i, PINC&(1<<(_pins[i]-14) ));
+        }
+        // Active high (pull down)
+        else{
+            if (_pins[i] < 8)       currentBit(i, !(PIND&(1<<_pins[i])) );
+            else if (_pins[i] < 14) currentBit(i, !(PINB&(1<<(_pins[i]-8)) ));
+            else if (_pins[i] < 20) currentBit(i, !(PINC&(1<<(_pins[i]-14)) ));
+        }
         //No change in button state
         if ( currentBit(i) == oldBit(i)){
           stableBit(i, 1);
           _allStable = true;
         }
-        
         //Change in button state
         else {
             _allStable = false;
@@ -145,6 +178,8 @@ void Bugtton::heldUntilUsed(uint8_t i, bool a) { bitWrite(_bits[i], 3, a); }
 bool Bugtton::heldUntilUsed(uint8_t i)      { return bitRead(_bits[i], 3); }
 void Bugtton::tickBit(uint8_t i, bool a)    { bitWrite(_bits[i], 2, a); }
 bool Bugtton::tickBit(uint8_t i)            { return bitRead(_bits[i], 2); }
+void Bugtton::flippedBit(uint8_t i, bool a) { bitWrite(_bits[i], 0, a); }
+bool Bugtton::flippedBit(uint8_t i)         { return bitRead(_bits[i], 0); }
 
 // Timestamps for debounce, and duration function
 void Bugtton::stateStarted(uint8_t i, uint32_t a){ _stateStarted[i] = a; }
@@ -246,8 +281,3 @@ bool Bugtton::intervalTick(uint8_t i, uint32_t t){
     }
     return false;
 }
-
-
-
-
-

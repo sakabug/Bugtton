@@ -5,7 +5,6 @@
 // It's fast and I want it faster.
 
 // Created by Sami Kaukasalo / sakabug, July 20, 2021.
-// Updated 9.12.2021
 
 // MIT License
 
@@ -42,12 +41,13 @@ class Bugtton {
         uint8_t _maskD;
         uint8_t _maskB;
         uint8_t _maskC;
+        uint8_t _idleD;
+        uint8_t _idleB;
+        uint8_t _idleC;
         uint8_t _count;
         uint8_t _debounceTime;
         bool _allStable;
         bool _flag1;
-        bool _allUp;
-        bool _allUpUsed;
         
         uint8_t *_pins;
         uint8_t *_bits;
@@ -72,14 +72,15 @@ class Bugtton {
         uint32_t stateStarted(uint8_t i);
         void tickBit(uint8_t i, bool a);
         bool tickBit(uint8_t i);
+        void flippedBit(uint8_t i, bool a);
+        bool flippedBit(uint8_t i);
         
 
     public:
 
-        Bugtton(const uint8_t a, const uint8_t *b, uint8_t mode, uint8_t dt);
+        Bugtton(const uint8_t a, const uint8_t *b, uint8_t dt);
         void debounceTime(uint16_t a);        
         void update();
-        
         void setMode(uint8_t i, uint8_t mode);
         uint32_t duration(uint8_t);
         bool fell(uint8_t i);
