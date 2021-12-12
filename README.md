@@ -13,7 +13,7 @@ If you have ideas, hit me message or make an issue.
 #include <Bugtton.h>
 
 const uint8_t buttonCount = 6;
-const uint8_t buttonPins[buttonCount] = {2,3,4,-5,6,7,14}; // pin5 with pull down resistor
+const uint8_t buttonPins[buttonCount] = {2,3,4,-5,6,7}; // pin5 with pull down resistor
 Bugtton buttons(buttonCount, buttonPins, 25);
 
 void setup() {
