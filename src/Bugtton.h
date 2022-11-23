@@ -78,7 +78,7 @@ class Bugtton {
 
     public:
 
-        Bugtton(const uint8_t a, const uint8_t *b, uint8_t dt);
+        Bugtton(const uint8_t a, const int8_t *b, uint8_t dt);
         void debounceTime(uint16_t a);        
         void update();
         void setMode(uint8_t i, uint8_t mode);

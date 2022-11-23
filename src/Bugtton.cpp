@@ -30,8 +30,8 @@
 
 #include "Bugtton.h"
 
-// Bugtton buttons(buttonCount, buttonPins(array), INPUT/INPUT_PULLUP, debounce time)
-Bugtton::Bugtton(const uint8_t a, const uint8_t *b, uint8_t dt){
+// Bugtton buttons(buttonCount, buttonPins(array), debounce time)
+Bugtton::Bugtton(const uint8_t a, const int8_t *b, uint8_t dt){
     // Init values
     _maskD = B00000000;
     _maskB = B00000000;
